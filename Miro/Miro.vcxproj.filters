@@ -8,6 +8,9 @@
     <Filter Include="DataStructure">
       <UniqueIdentifier>{c9de6a82-710a-425d-a1d8-2e0ee00cb560}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Board">
+      <UniqueIdentifier>{c77414bb-f371-4bd6-956a-65f4f13c3a39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Miro.cpp">
@@ -22,6 +25,18 @@
     <ClCompile Include="Vector.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Board.cpp">
+      <Filter>Board</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleHelper.cpp">
+      <Filter>Board</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Board</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="List.h">
@@ -32,6 +47,21 @@
     </ClInclude>
     <ClInclude Include="Vector.h">
       <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Board</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleHelper.h">
+      <Filter>Board</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Board</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
