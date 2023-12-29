@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 #include "Types.h"
-
+#include <iostream>
 using namespace std;
 
 struct Pos
