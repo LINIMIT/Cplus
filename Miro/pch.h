@@ -13,7 +13,7 @@ struct Pos
 
 	bool operator==(const Pos& other)
 	{
-		return y == other.y && other.x;
+		return y == other.y && x == other.x;
 	}
 
 	bool operator!=(const Pos& other)

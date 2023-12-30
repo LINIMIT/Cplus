@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Board.h"
-
-const char* TILE = "ㅁ";
+#include "Player.h"
+const char* TILE = "■";
 Board::Board()
 {
 }
@@ -10,9 +10,10 @@ Board::~Board()
 {
 }
 
-void Board::Init(int32 size)
+void Board::Init(int32 size , Player* player)
 {
 	_size = size;
+	_player = player;
 	GenerateMap();
 }
 
@@ -21,11 +22,11 @@ void Board::Render()
 	ConsoleHelper::SetCursorPosition(0, 0);
 	ConsoleHelper::ShowConsoleCursor(false);
 
-	for (int32 y = 0; 25; y++)
+	for (int32 y = 0; y < _size; y++)
 	{
-		for (int32 x = 0; x < 25; x++) 
+		for (int32 x = 0; x < _size; x++)
 		{
-			ConsoleColor color = GetTileColor(Pos(x, y));
+			ConsoleColor color = GetTileColor(Pos(y, x));
 			ConsoleHelper::SetCursorColor(color);
 			cout << TILE;
 		}
@@ -33,16 +34,89 @@ void Board::Render()
 	}
 }
 
+
+//Binary Tree
+// Binary Tree 미로 생성 알고리즘
+
 void Board::GenerateMap()
 {
+	for (int32 y = 0; y < _size; y++)
+	{
+		for (int32 x = 0; x < _size; x++)
+		{
+			if (x % 2 == 0 || y % 2 == 0)
+				_Tile[y][x] = TileType::WALL;
+			else
+				_Tile[y][x] = TileType::EMPTY;
+		}
+	}
+
+	// 랜덤으로 우측 혹은 아래로 길을 뚫는 작업
+	for (int32 y = 0; y < _size; y++)
+	{
+		for (int32 x = 0; x < _size; x++)
+		{
+			// 초록색 지점인지
+			if (x % 2 == 0 || y % 2 == 0)
+				continue;
+
+			// 목표 지점
+			if (y == _size - 2 && x == _size - 2)
+				continue;
+
+			// 하단에 도달
+			if (y == _size - 2)
+			{
+				_Tile[y][x + 1] = TileType::EMPTY;
+				continue;
+			}
+
+			// 우측에 도달
+			if (x == _size - 2)
+			{
+				_Tile[y + 1][x] = TileType::EMPTY;
+				continue;
+			}
+
+			const int32 randValue = ::rand() % 2;
+			if (randValue == 0)
+				_Tile[y][x + 1] = TileType::EMPTY;
+			else
+				_Tile[y + 1][x] = TileType::EMPTY;
+		}
+	}
 }
 
 TileType Board::GetTileType(Pos pos)
 {
-	return TileType();
+	if (pos.x < 0 || pos.x >= _size)
+		return TileType::NONE;
+
+	if (pos.y < 0 || pos.y >= _size)
+		return TileType::NONE;
+
+	return _Tile[pos.y][pos.x];
+
 }
 
 ConsoleColor Board::GetTileColor(Pos pos)
 {
-	return ConsoleColor();
+
+	if (_player && _player->GetPos() == pos)
+		return ConsoleColor::YELLOW;
+
+	if (GetExitPos() == pos)
+		return ConsoleColor::BLUE;
+
+	TileType tileType = GetTileType(pos);
+
+	switch (tileType)
+	{
+	case TileType::EMPTY:
+		return ConsoleColor::GREEN;
+	case TileType::WALL:
+		return ConsoleColor::RED;
+	}
+
+	return ConsoleColor::WHITE;
 }
