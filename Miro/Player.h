@@ -18,6 +18,7 @@ public:
 	}
 	Pos GetPos() { return _pos; }
 
+	bool CanGo(Pos pos);
 private:
 	void CalculatePath();
 
