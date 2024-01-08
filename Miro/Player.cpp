@@ -64,11 +64,29 @@ void Player::CalculatePath()
 	_dir = (_dir - 1) % DIR_COUNT;
 	//왼쪽 방향 90도 회전
 	_dir = (_dir + 1) % DIR_COUNT;
-
+	return;
 	while (pos != dest)
 	{
 		//현재 바라보는 방향 기준, 오른쪽으로 갈 수 있는지 확인
+		int32  newDir;
+		if (CanGo(pos + front[newDir]))
+		{
+			//오른쪽 방향 90도 회전
+			//앞으로 한 보 전진
+			//좌표 기록
+			_path.push_back(pos);
 
+		}
+		//벽이 막혀있다 앞으로 갈 수 있는지 확인
+		else if (CanGo())
+		{
+			_path.push_back(pos);
+
+		}
+		else
+		{
+			//왼쪽 방향으로 90도 회전
+		}
 	}
 
 	/*목적지 찾을 때까지

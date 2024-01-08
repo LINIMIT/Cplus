@@ -1,5 +1,16 @@
-﻿  Board.cpp
+﻿  pch.cpp
+  Array.cpp
+  Board.cpp
+  ConsoleHelper.cpp
+  List.cpp
   Miro.cpp
   Player.cpp
+  Vector.cpp
   코드를 생성하고 있습니다...
-  Miro.vcxproj -> C:\Users\LINIT\Desktop\coding\C++\Cplus\x64\Debug\Miro.exe
+C:\Users\LINIT\Desktop\coding\C++\Cplus\Miro\Player.cpp(81,12): error C2660: 'Player::CanGo': 함수는 0개의 인수를 사용하지 않습니다.
+  (소스 파일 '/Player.cpp'을(를) 컴파일하는 중)
+  C:\Users\LINIT\Desktop\coding\C++\Cplus\Miro\Player.cpp(30,14):
+  'Player::CanGo' 선언을 참조하십시오.
+  C:\Users\LINIT\Desktop\coding\C++\Cplus\Miro\Player.cpp(81,12):
+  인수 목록 '()'을(를) 일치시키는 동안
+  
