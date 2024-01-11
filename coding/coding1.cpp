@@ -4,104 +4,87 @@ using namespace std;
 #include <queue>
 
 
-
-template<typename T, typename Predicate = less<T>>
-class PriorityQueue
+//인접 리스트 방식
+void CreateGraph_2()
 {
-private:
-	//0(logN) 높이에 의존적이기 때문
-	void push(const T& data)
+	struct Vertex
 	{
-		_heap.push_back(data);
+		int data;
+	};
 
-		int now = static_cast<int>(_heap.size()) - 1;
+	vector<Vertex>  v(6);
 
-		while (now > 0)
+	//2차원 벡터
+	vector<vector<int>> adjacent;
+	adjacent.resize(6);
+
+	//adjacent[0].push_back(1);
+	//adjacent[0].push_back(3);
+	adjacent[0] = { 1,3 };
+	adjacent[1] = { 0,2,3 };
+	adjacent[3] = { 4 };
+	adjacent[5] = { 4 };
+
+
+	//0-3 연결확인
+	bool connected = false;
+
+	int size = adjacent[0].size();
+	for (int i = 0; i < size; i++)
+	{
+		int vertex = adjacent[0][i];
+		if (vertex == 3)
 		{
-			//부모인덱스
-			int next = (now - 1) / 2; 
-
-			//부모 노드와 비교해 더 작으면 패배
-			if (_heap[now] < _heap[next])
-			{
-				break;
-			}
-
-			//데이터 교체
-			::swap(_heap[now],_heap[next]);
-			now = next;
+			connected = true; // 간선연결 확인
 
 		}
 	}
-	//0(logN)
-	void pop()
+}
+
+
+//인접 행렬 방식
+void CreateGraph_3()
+{
+	struct Vertex
 	{
-		_heap[0] = _heap.back();
-		_heap.pop_back();
+		int data;
+	};
 
-		int now = 0;
+	//[X][0][X][0][X][X]
+	//[0][X][0][0][X][X]
+	//[X][X][X][X][X][X]
+	//[X][X][X][X][0][X]
+	//[X][X][X][X][X][X]
+	//[X][X][X][X][0][X]
 
-		while (true)
-		{
-			int left = 2 * now + 1;
-			int right = 2 * now + 2;
+	//6개의 벡터를 만들고 그 벡터의 안에 X(false)를 넣어줌
+	//adjacent[from][to]
+	//메모리 소모 심하지만, 빠른 접근
+	//인접 리스트는 일일이 검색해야하지만 행렬 방식에서는 그냥 인덱스를 검색하면됨
+	vector<vector<bool>> adjacent(6, vector<bool>(6, false));
 
-			//리프에 도달한 경우
-			if (left >= (int)_heap.size())
-			{
-				break;
-			}
+	adjacent[0][1] = true;
+	adjacent[0][3] = true;
+	adjacent[1][2] = true;
+	adjacent[1][3] = true;
+	adjacent[3][4] = true;
+	adjacent[5][4] = true;
 
-			int next = now;
+	//0-3 연결확인
+	bool connected = adjacent[0][3];
 
-			//왼쪽값이 현재 값보다 크다면
-			if (_heap[next] < _heap[left])
-			{
-				next = left;
-			}
-
-			//오른쪽이 현재 값보다 크다면
-			if (right < _heap.size() && _heap[next] < _heap[right])
-			{
-				next = right;
-			}
-
-			//왼쪽/오른쪽 둘 다 현재 값보다 작으면 종료
-			if (next == now)
-			{
-				break;
-			}
-
-			::swap(_heap[now], _heap[next]);
-			now = next;
-			
-		}
-	}
-
-	T& top()
+	vector<vector<int>> adjecent2 =
 	{
-		return _heap[0];
-	}
-	bool empty()
-	{
-		return _heap.empty();
-	}
-public:
-	vector<T> _heap;
-	Predicate _predicate;
-};
+		{-1,15,-1,35,-1,-1},
+		{15,-1,+5,10,-1,-1},
+		{-1,+5,-1,-1,-1,-1},
+		{35,10,-1,-1,+5,-1},
+		{-1,-1,-1,+5,-1,+5},
+		{-1,-1,-1,-1,+5,-1}
+	};
+}
 void main()
 {
-	vector<int> v;
-	priority_queue<int> pq;
 
-	pq.push(10);
-	pq.push(40);
-	pq.push(30);
-	pq.push(50);
-	pq.push(20);
-
-	int value = pq.top();
-	pq.pop();
 
 }
