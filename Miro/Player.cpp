@@ -56,36 +56,41 @@ void Player::CalculatePath()
 		Pos(1,0),
 		Pos(0,1)
 	};
-
+	/*
 	//switch문 대신 사용
 	//내가 바라보고 있는 방향 기준 앞에 있는 좌표는 무엇인가?
 	Pos next = pos + front[_dir];
 	//오른쪽 방향 90도 회전
 	_dir = (_dir - 1) % DIR_COUNT;
 	//왼쪽 방향 90도 회전
-	_dir = (_dir + 1) % DIR_COUNT;
-	return;
+	_dir = (_dir + 1) % DIR_COUNT;*/
+	
 	while (pos != dest)
 	{
 		//현재 바라보는 방향 기준, 오른쪽으로 갈 수 있는지 확인
-		int32  newDir;
+		int32  newDir = (_dir - 1 + DIR_COUNT) % DIR_COUNT ;
+		;
 		if (CanGo(pos + front[newDir]))
 		{
 			//오른쪽 방향 90도 회전
+			_dir = newDir;
 			//앞으로 한 보 전진
+			pos += front[_dir];
 			//좌표 기록
 			_path.push_back(pos);
 
 		}
 		//벽이 막혀있다 앞으로 갈 수 있는지 확인
-		else if (CanGo())
+		else if (CanGo(pos + front[_dir]))
 		{
+			pos += front[_dir];
 			_path.push_back(pos);
-
 		}
 		else
 		{
 			//왼쪽 방향으로 90도 회전
+			_dir = (_dir + 1) % DIR_COUNT;
+
 		}
 	}
 
