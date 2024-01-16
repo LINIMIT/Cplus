@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include "Types.h"
 #include <iostream>
+#include <queue>
+#include <vector>
 using namespace std;
 
 struct Pos

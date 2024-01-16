@@ -19,16 +19,18 @@ public:
 	Pos GetPos() { return _pos; }
 
 	bool CanGo(Pos pos);
+
+	
 private:
 	void CalculatePath();
-
+	void CalculatePath_Bfs();
 private:	
 	Pos _pos;
 	int32 _dir = DIR_UP;
 	Board* _board = nullptr;
 
 	//동적 배열
-	Vector _path;
+	vector<Pos> _path;
 	int32 _pathIndex = 0;
 	uint64 _sumTick = 0;
 
