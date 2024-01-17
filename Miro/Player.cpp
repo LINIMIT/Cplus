@@ -8,7 +8,8 @@ void Player::Init(Board* board)
 	_board = board;
 
 	//CalculatePath();
-	CalculatePath_Bfs();
+	//CalculatePath_Bfs();
+	CalculatePath_AStar();
 }
 
 void Player::Update(uint64 deltaTick)
@@ -65,11 +66,11 @@ void Player::CalculatePath()
 	_dir = (_dir - 1) % DIR_COUNT;
 	//왼쪽 방향 90도 회전
 	_dir = (_dir + 1) % DIR_COUNT;*/
-	
+
 	while (pos != dest)
 	{
 		//현재 바라보는 방향 기준, 오른쪽으로 갈 수 있는지 확인
-		int32  newDir = (_dir - 1 + DIR_COUNT) % DIR_COUNT ;
+		int32  newDir = (_dir - 1 + DIR_COUNT) % DIR_COUNT;
 		;
 		if (CanGo(pos + front[newDir]))
 		{
@@ -189,4 +190,150 @@ void Player::CalculatePath_Bfs()
 
 	_path = temp;
 
+}
+
+
+struct PQNode
+{
+	PQNode(int32 f, int32 g, Pos pos) : f(f), g(g), pos(pos) { }
+
+	bool operator<(const PQNode& other) const { return f < other.f; }
+	bool operator>(const PQNode& other) const { return f > other.f; }
+
+	int32 f;
+	int32 g;
+	Pos pos;
+
+
+};
+
+void Player::CalculatePath_AStar()
+{
+	//  F = G + H
+	//  F = 최종 점수
+	//  G = 시작점에서 해당 좌표까지 이동하는데 드는 비용
+	//  H = 목적지에서 해당 좌표까지 이동하는데 드는 비용
+
+	Pos start = _pos;
+	Pos pos = _pos;
+	Pos dest = _board->GetExitPos(); // 목적지
+
+		Pos front[] =
+	{
+		Pos(-1, 0), // UP
+		Pos(0, -1), // LEFT
+		Pos(1, 0), // DOWN
+		Pos(0, 1), // RIGHT
+		Pos(-1, -1), // UP_LEFT
+		Pos(1, -1), // DOWN_LEFT
+		Pos(1, 1), // DOWN_RIGHT
+		Pos(-1, 1), // UP_RIGHT
+	};
+
+	int32 cost[] =
+	{
+		10,
+		10,
+		10,
+		10,
+		14,
+		14,
+		14,
+		14
+	};
+
+	const int32 size = _board->GetSize();
+
+	vector<vector<int32>> best(size, vector<int32>(size, INT32_MAX));
+
+	//(y,x)에 방문했는지 여부(방문목록)
+	vector<vector<bool>> closed(size, vector<bool>(size, false));
+
+	//부모추적용도
+	vector<vector<Pos>> parent(size, vector<Pos>(size, Pos(-1, -1)));
+
+
+	//예약 시스템 구현
+	//뒤늦게 더 좋은 경로가 나올 수 있기를 대비함
+
+
+	//오픈리스트(발견목록)
+	priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
+
+	//초기값
+	{
+		int32 g = 0;
+		int32 h = 10 * (abs(dest.y - start.y) + abs(dest.x - start.x));
+
+		pq.push(PQNode(g + h, g, start));
+		
+		best[start.y][start.x] = g+h;
+		parent[start.y][start.x] = start;
+	}
+
+	while (pq.empty() == false)
+	{
+		// 제일 좋은 후보
+
+		PQNode node = pq.top();
+		pq.pop();
+
+		//이미 방문한 경우
+		if (closed[node.pos.y][node.pos.x])
+			continue;
+		//더 우수한 후보가 있는 경우
+		if (best[node.pos.y][node.pos.x] < node.f)
+			continue;
+
+		//방문
+		closed[node.pos.y][node.pos.x] = true;
+
+		if (node.pos == dest)
+			break;
+
+		for (int32 dir = 0; dir < 8; dir++)
+		{
+		
+			Pos nextPos = node.pos + front[dir];
+			
+			if (CanGo(nextPos) == false)
+				continue;
+			if (closed[nextPos.y][nextPos.x])
+				continue;
+
+			int32 g = node.g + cost[dir];
+			int32 h = 10 * (abs(dest.y - nextPos.y) + abs(dest.x - nextPos.x));
+
+
+			//다른 경로에서 더 빠른 길을 찾으면 스팁
+			if (best[nextPos.y][nextPos.x] <= g + h)
+				continue;
+
+			best[nextPos.y][nextPos.x] = g + h;
+			pq.push(PQNode(g + h, g, nextPos));
+			parent[nextPos.y][nextPos.x] = node.pos;
+		}
+	}
+
+	_path.clear();
+	Pos pos = dest;
+
+	while (true)
+	{
+		_path.push_back(pos);
+
+		// 시작점
+		if (pos == parent[pos.y][pos.x])
+			break;
+
+		pos = parent[pos.y][pos.x];
+	}
+
+	/*vector<Pos> temp(_path.size());
+	for (int i = 0; i < _path.size(); i++)
+		temp[i] = _path[_path.size() - 1 - i];
+
+	_path = temp;*/
+
+	std::reverse(_path.begin(), _path.end());
 }

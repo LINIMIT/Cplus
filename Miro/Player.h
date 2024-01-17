@@ -24,6 +24,8 @@ public:
 private:
 	void CalculatePath();
 	void CalculatePath_Bfs();
+	void CalculatePath_AStar();
+
 private:	
 	Pos _pos;
 	int32 _dir = DIR_UP;
