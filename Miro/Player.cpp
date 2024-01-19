@@ -193,7 +193,7 @@ void Player::CalculatePath_Bfs()
 }
 
 
-struct PQNode
+/*struct PQNode
 {
 	PQNode(int32 f, int32 g, Pos pos) : f(f), g(g), pos(pos) { }
 
@@ -333,7 +333,8 @@ void Player::CalculatePath_AStar()
 	for (int i = 0; i < _path.size(); i++)
 		temp[i] = _path[_path.size() - 1 - i];
 
-	_path = temp;*/
+	_path = temp;
 
 	std::reverse(_path.begin(), _path.end());
 }
+*/
