@@ -3,35 +3,39 @@ using namespace std;
 #include <vector>
 #include <queue>
 
-class Item
-{
-public:
-	int _itemid = 0;
-	int _rarity = 0;
-	int _ownerId = 0;
-};
+vector<int> numbers;
 
-using ItemSelectorType = bool(*)(Item* item);
-
-Item* FindItem(Item items[], int itemCount, ItemSelectorType selector)
+void BinarySearch(int N)
 {
-	for (int i = 0; i < itemCount; i++)
+	int left = 0;
+	int right = numbers.size() - 1;
+
+	while (left <= right)
 	{
-		Item* item = &items[i];
-		if (selector(item))
-			return item;
-	}
-	return nullptr;
-}
+		cout << "탐색 범위 : " << left << "~" << right << endl;
 
-bool IsRare(Item* item)
-{
-	return item->_rarity == 1;
+		int mid = (left + right) / 2;
+
+		if (N < numbers[mid])
+		{
+			cout << N << " < " << numbers[mid] << endl;
+			right = mid - 1;
+		}
+		else if (N > numbers[mid])
+		{
+			cout << N << " > " << numbers[mid] << endl;
+			left = mid + 1;
+		}
+		else
+		{
+			cout << "찾았음" << endl;
+			break;
+		}
+	}
 }
 int main()
 {
-	Item items[10];
-	items[3]._rarity = 1;
+	numbers = { 1,8,15,23,32,44,56,63,81,91 };
+	BinarySearch(81);
 
-	FindItem(items, 10, IsRare);
 }
