@@ -4,102 +4,84 @@ using namespace std;
 #include <queue>
 #include <unordered_map>
 
-enum class ObjectType
+enum class ItemType
 {
-	Player,
-	Monster,
-	Projectile,
-	Env
+	None,
+	Armor,
+	Weapon,
+	Jewelry,
+	Consumable
 };
 
-class Object
+enum class Rarity
 {
-public:
-	Object(ObjectType type) : _type(type) {}
-
-	virtual ~Object() {}
-public:
-	ObjectType GetObjectType() { return _type; }
-
-	int _id;
-	ObjectType _type;
-};
-class Player : public Object
-{
-public:
-	Player() : Object(ObjectType::Player) {}
-	Player(int id) : Object(ObjectType::Player) {}
-private:
-};
-class Monster : public Object
-{
-public:
-	Monster() : Object(ObjectType::Monster){}
-	int _id;
+	Common,
+	Rare,
+	Unique
 };
 
-class Projectile : public Object
+class Item
 {
 public:
+	Item() {}
+	Item(int itemid, Rarity rarity, ItemType type) : _itemid(itemid), _rarity(rarity), _type(type) {}
 
-	Projectile() : Object(ObjectType::Projectile) {}
-
+public:
+	int _itemid = 0;
+	Rarity _rarity = Rarity::Common;
+	ItemType _type = ItemType::None;
 };
 
-class Env : public Object
-{
-
-};
-class Field 
+class Knight
 {
 public:
-	static Field* GetInstance()
+	auto MakeResetHpJob()
 	{
-		static Field field;
-		return &field;
+		//현재 여기서 주소값을 복사해서 사용하기 때문에  main에서 객체를 생성하고 delete를 한뒤 job()을 하려하면 잃어버린 상태
+		//결국 _hp는 class에 종속적이기 때문이다.
+		//여기서는 _hp를 캡쳐하는것이 아닌 this를 캡쳐하는것이다.
+		auto job = [=]()
+		{
+			_hp = 200;
+			//this->_hp나 다름없다.
+		};
+		return job;
 	}
 
-	void Add(Object* player)
-	{
-		_objects.insert(make_pair(player->_id, player));
-	}
-
-	void Remove(int id)
-	{
-		_objects.erase(id);
-	}
-
-	Object* Get(int id)
-	{
-		auto findit = _objects.find(id);
-
-		if (findit != _objects.end())
-			return findit->second;
-
-		return nullptr;
-	}
-	
-	unordered_map<int, Object*> _objects;
-
-	
-	//unordered_map<int, Player*> _players;
-	//unordered_map<int, Monster*> _monsters;
-
+public:
+	int _hp;
 };
 int main()
 {
-	Field::GetInstance()->Add(new Player(1));
-	Object* obj = Field::GetInstance()->Get(1);
+	vector<Item> v;
+	v.push_back(Item(1, Rarity::Common, ItemType::Weapon));
+	v.push_back(Item(1, Rarity::Common, ItemType::Armor));
+	v.push_back(Item(1, Rarity::Rare, ItemType::Jewelry));
+	v.push_back(Item(1, Rarity::Unique, ItemType::Weapon));
 
-	if (obj && obj->GetObjectType() == ObjectType::Player)
-	{
-		Player* player = static_cast<Player*>(obj);
-	}
-	Player* player = dynamic_cast<Player*>(Field::GetInstance()->Get(1));
+	/*{
+		struct IsUniqueItem
+		{
+			bool operator()(Item& item)
+			{
+				return item._rarity == Rarity::Unique;
+			}
+		};
 
-	if(player)
-	{
+		//람다식
+		//[](){}
 
-	}
 
+		std::find_if(v.begin(), v.end(), IsUniqueItem());
+	}*/
+
+
+	std::find_if(v.begin(), v.end(), [](Item& item) {return item._rarity == Rarity::Unique; });
+
+	Knight* k1 = new Knight;
+	k1->_hp = 100;
+
+	auto job = k1->MakeResetHpJob();
+	delete k1;
+	job();
 }

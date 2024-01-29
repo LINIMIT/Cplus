@@ -22,6 +22,7 @@ public:
 	
 	void Delete(int key);
 	void Delete(Node* node);
+	void Replace(Node* u, Node* v);
 
 private:
 	Node* _root = nullptr;
