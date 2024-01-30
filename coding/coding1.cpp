@@ -3,85 +3,67 @@ using namespace std;
 #include <vector>
 #include <queue>
 #include <unordered_map>
+#include <list>
+#include <map>
+#include <algorithm>
 
-enum class ItemType
+void BubbleSort(vector<int>& v)
 {
-	None,
-	Armor,
-	Weapon,
-	Jewelry,
-	Consumable
-};
+	const int n = v.size();
 
-enum class Rarity
-{
-	Common,
-	Rare,
-	Unique
-};
-
-class Item
-{
-public:
-	Item() {}
-	Item(int itemid, Rarity rarity, ItemType type) : _itemid(itemid), _rarity(rarity), _type(type) {}
-
-public:
-	int _itemid = 0;
-	Rarity _rarity = Rarity::Common;
-	ItemType _type = ItemType::None;
-};
-
-class Knight
-{
-public:
-	auto MakeResetHpJob()
+	for (auto i = 0; i < n - 1; i++)
 	{
-		//현재 여기서 주소값을 복사해서 사용하기 때문에  main에서 객체를 생성하고 delete를 한뒤 job()을 하려하면 잃어버린 상태
-		//결국 _hp는 class에 종속적이기 때문이다.
-		//여기서는 _hp를 캡쳐하는것이 아닌 this를 캡쳐하는것이다.
-		auto job = [=]()
+		for (auto j = 0; j < n - 1 - i; j++)
 		{
-			_hp = 200;
-			//this->_hp나 다름없다.
-		};
-		return job;
+			if (v[j] > v[j + 1])
+				swap(v[j], v[j + 1]);
+		}
+	}
+}
+
+void SelectionSort(vector<int>& v)
+{
+	const int n = v.size();
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		int bestIndex = i;
+
+		for (int j = i + 1; j < n; j++)
+		{
+			if (v[j] < v[bestIndex])
+				bestIndex = j;
+		}
+		if (i != bestIndex)
+		{
+			swap(v[i], v[bestIndex]);
+		}
+
+	}
+}
+
+void HeapSort(vector<int>& v)
+{
+
+	priority_queue<int,vector<int>,greater<int>> pq;
+
+	// 0(NlogN)
+	for (int num : v)
+		pq.push(num); //logN
+
+	v.clear();
+
+	//0(NlogN)
+	while (pq.empty() == false)
+	{
+		v.push_back(pq.top()); // 0(1)
+		pq.top();//0(logN)
 	}
 
-public:
-	int _hp;
-};
+}
+
 int main()
 {
-	vector<Item> v;
-	v.push_back(Item(1, Rarity::Common, ItemType::Weapon));
-	v.push_back(Item(1, Rarity::Common, ItemType::Armor));
-	v.push_back(Item(1, Rarity::Rare, ItemType::Jewelry));
-	v.push_back(Item(1, Rarity::Unique, ItemType::Weapon));
-
-	/*{
-		struct IsUniqueItem
-		{
-			bool operator()(Item& item)
-			{
-				return item._rarity == Rarity::Unique;
-			}
-		};
-
-		//람다식
-		//[](){}
-
-
-		std::find_if(v.begin(), v.end(), IsUniqueItem());
-	}*/
-
-
-	std::find_if(v.begin(), v.end(), [](Item& item) {return item._rarity == Rarity::Unique; });
-
-	Knight* k1 = new Knight;
-	k1->_hp = 100;
-
-	auto job = k1->MakeResetHpJob();
-	delete k1;
-	job();
+	vector<int> v{ 1,5,3,4,2 };
+	HeapSort(v);
 }
